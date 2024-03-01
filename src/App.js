@@ -1,24 +1,34 @@
 import logo from './logo.svg';
 import './App.css';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Register from './components/Register';
+import Home from './components/Home';
+import Login from './components/Login';
+import loginStore from '../src/store/LoginStore'
+import NotLoggedIn from './components/NotLoggedIn';
+import { useEffect, useState } from 'react';
+import Navigation from './components/navigation/Navigation';
 
 function App() {
+  // const loginStatus =  loginStore.getLoginStatus();
+    //  console.log(loginStatus)
+     const[loginStatus, setLoginStatus] = useState(loginStore.getLoginStatus())
+     const[username, setUsername] = useState("");
+
+    useEffect(() => {
+      console.log(loginStatus)
+    },[loginStatus]) 
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path='/' element={<Navigation/>}>
+          <Route index element={<Register/>}/>
+          <Route path="register"  element={<Register/>}/>
+          <Route path="login" element={<Login setLoginStatus={setLoginStatus} loginStatus={loginStatus} setUsername={setUsername}/>} />
+          <Route path="user" element={loginStatus == true ? <Home username={username} setLoginStatus={setLoginStatus}/> : <NotLoggedIn/>} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
 
